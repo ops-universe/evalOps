@@ -1,0 +1,25 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {validateDataset,readDataset,limits} from '../src/dataset.mjs';
+import {buildEvidence,writeEvidence} from '../src/evidence.mjs';
+const sample={schemaVersion:1,synthetic:true,cases:[{id:'a',metric:'exact',expected:'secret example',actual:'secret example'}]};
+const cli=fileURLToPath(new URL('../src/cli.mjs',import.meta.url));
+async function fixture(t){const dir=await mkdtemp(join(tmpdir(),'evalops-'));t.after(()=>rm(dir,{recursive:true,force:true}));const path=join(dir,'dataset.json');await writeFile(path,JSON.stringify(sample));return {dir,path,out:join(dir,'report.json')};}
+const run=(...args)=>spawnSync(process.execPath,[cli,...args],{encoding:'utf8'});
+test('versioned dataset accepted',()=>assert.equal(validateDataset(sample),sample));
+test('unsupported version and unknown fields rejected',()=>{assert.throws(()=>validateDataset({...sample,schemaVersion:2}));assert.throws(()=>validateDataset({...sample,threshold:0}));});
+test('duplicate and unsafe identifiers rejected',()=>{assert.throws(()=>validateDataset({...sample,cases:[sample.cases[0],sample.cases[0]]}));assert.throws(()=>validateDataset({...sample,cases:[{...sample.cases[0],id:'bad id'}]}));});
+test('text and dataset count bounds',()=>{assert.throws(()=>validateDataset({...sample,cases:[{...sample.cases[0],actual:'x'.repeat(limits.text+1)}]}));assert.throws(()=>validateDataset({...sample,cases:Array(limits.cases+1).fill(sample.cases[0])}));});
+test('file size and invalid JSON rejected',async t=>{const f=await fixture(t);await writeFile(f.path,'x');await assert.rejects(readDataset(f.path));await writeFile(f.path,Buffer.alloc(limits.fileBytes+1));await assert.rejects(readDataset(f.path));});
+test('invalid UTF-8 rejected',async t=>{const f=await fixture(t);await writeFile(f.path,Buffer.from([255]));await assert.rejects(readDataset(f.path),/UTF-8 JSON/);});
+test('evidence is stable and excludes raw case strings',()=>{const a=buildEvidence(sample,1);assert.deepEqual(a,buildEvidence(sample,1));assert.match(a.datasetSha256,/^[a-f0-9]{64}$/);assert.ok(!JSON.stringify(a).includes('secret example'));});
+test('digest independent of object key order and sensitive to dataset changes',()=>{const a=buildEvidence(sample,1);assert.equal(a.datasetSha256,buildEvidence({cases:sample.cases,synthetic:true,schemaVersion:1},1).datasetSha256);assert.notEqual(a.datasetSha256,buildEvidence({...sample,cases:[{...sample.cases[0],actual:'wrong'}]},1).datasetSha256);});
+test('exclusive evidence write refuses overwrite',async t=>{const f=await fixture(t);await writeEvidence(f.out,buildEvidence(sample,1));await assert.rejects(writeEvidence(f.out,{}),{code:'EEXIST'});});
+test('CLI validate and run produce valid reports',async t=>{const f=await fixture(t);assert.equal(run('validate',f.path).status,0);const r=run('run',f.path,'--min-pass-rate','1','--out',f.out);assert.equal(r.status,0,r.stderr);assert.deepEqual(JSON.parse(r.stdout),JSON.parse(await readFile(f.out,'utf8')));});
+test('CLI exit codes distinguish gate failure from malformed invocation',async t=>{const f=await fixture(t);await writeFile(f.path,JSON.stringify({...sample,cases:[{...sample.cases[0],actual:'wrong'}]}));assert.equal(run('run',f.path,'--min-pass-rate','1','--out',f.out).status,1);assert.equal(JSON.parse(await readFile(f.out,'utf8')).gate,'fail');assert.equal(run('run',f.path).status,2);assert.equal(run('run',f.path,'--min-pass-rate','1','--out',f.out).status,2);});
+test('CLI refuses duplicate and unknown options',async t=>{const f=await fixture(t);assert.equal(run('run',f.path,'--min-pass-rate','1','--min-pass-rate','0').status,2);assert.equal(run('run',f.path,'--unknown','1').status,2);});

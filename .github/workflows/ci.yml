@@ -14,6 +14,20 @@ jobs:
           node-version: '22'
       - run: npm ci
       - run: npm test
+      - run: node src/cli.mjs validate datasets/synthetic.json
+      - run: node src/cli.mjs run datasets/synthetic.json --min-pass-rate 0.75 --out evidence.json
+      - name: Verify failed gate is blocking
+        run: |
+          code=0
+          node src/cli.mjs run datasets/synthetic.json --min-pass-rate 1 --out failed-evidence.json || code=$?
+          test "$code" -eq 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-evaluation-evidence
+          path: |
+            evidence.json
+            failed-evidence.json
+          if-no-files-found: error
   website-build:
     runs-on: ubuntu-24.04
     defaults:
