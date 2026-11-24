@@ -9,3 +9,5 @@ Added bounded version 1 dataset validation, CLI quality gates, deterministic evi
 Added opt-in rubric judging, mock and configurable Chat Completions adapters, timeout/error controls and human-label calibration metrics.
 
 Added RAG retrieval ranking metrics, exact citation quote verification, explicit groundedness scorer interface and synthetic evidence gates.
+
+Added local RAG CLI, versioned reports and per-case metric regression comparison with blocking exit codes.

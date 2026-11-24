@@ -42,5 +42,5 @@ export function evaluateRag(dataset,{k=5,minRecall=1,minCitationAccuracy=1}={}){
   return {id:c.id,...m,...citations,passed:m.recall>=minRecall&&citations.citationAccuracy>=minCitationAccuracy};
  });
  const passed=results.filter(r=>r.passed).length;
- return {schemaVersion:1,kind:'rag',synthetic:dataset.synthetic,suiteSha256:hash({suite:suite.sort((a,b)=>a.id.localeCompare(b.id)),k,minRecall,minCitationAccuracy}),datasetSha256:hash(dataset),k,minRecall,minCitationAccuracy,passed,total:results.length,gate:passed===results.length?'pass':'fail',results};
+ return {schemaVersion:1,kind:'rag',evidenceVersion:1,evaluatorVersion:'0.1.0',synthetic:dataset.synthetic,suiteSha256:hash({suite:suite.sort((a,b)=>a.id.localeCompare(b.id)),k,minRecall,minCitationAccuracy}),datasetSha256:hash(dataset),k,minRecall,minCitationAccuracy,passed,total:results.length,gate:passed===results.length?'pass':'fail',results};
 }

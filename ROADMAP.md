@@ -3,7 +3,7 @@
 - Phase 2: versioned datasets, CLI and evidence (implemented).
 - Phase 3: extra metrics and regression comparison (implemented).
 - Phase 4: opt-in judging and calibration (merged; live providers unverified).
-- Phase 5: RAG evaluation (in progress: retrieval metrics, citation checks, scorer interface, synthetic evidence; CLI and baseline comparison pending).
+- Phase 5: RAG evaluation (Phase 5a merged; Phase 5b CLI and baseline comparison implemented on feature branch, CI pending).
 - Phase 6: agent trace evaluation.
 - Phase 7: CI/CD gates and baseline management.
 - Phase 8: local dashboard.
