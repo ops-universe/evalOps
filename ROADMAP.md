@@ -1,8 +1,11 @@
 # Roadmap
-
-- Phase 1: deterministic engine, synthetic cases, governance, website starter.
-- Phase 2: versioned dataset and evidence schemas, local CLI and deterministic evidence artifacts (implemented).
-- Phase 3: additional metrics and baseline regression comparison (implemented).
-- Phase 4: opt-in judge API, configurable transport and calibration metrics (implemented; live provider verification pending).
-- Phase 5: RAG and agent evaluation, CI gates and dashboard.
-- Phase 6: synthetic FDE case studies, documentation and release review.
+- Phase 1: deterministic engine, governance and website starter (implemented).
+- Phase 2: versioned datasets, CLI and evidence (implemented).
+- Phase 3: extra metrics and regression comparison (implemented).
+- Phase 4: opt-in judging and calibration (merged; live providers unverified).
+- Phase 5: RAG evaluation (in progress: retrieval metrics, citation checks, scorer interface, synthetic evidence; CLI and baseline comparison pending).
+- Phase 6: agent trace evaluation.
+- Phase 7: CI/CD gates and baseline management.
+- Phase 8: local dashboard.
+- Phase 9: synthetic enterprise FDE examples.
+- Phase 10: release hardening, website and deployment readiness.

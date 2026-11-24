@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "supplier-terms",
+      "relevant": [
+        "policy"
+      ],
+      "retrieved": [
+        "policy",
+        "noise"
+      ],
+      "context": [
+        {
+          "id": "policy",
+          "text": "Supplier onboarding requires a tax ID."
+        }
+      ],
+      "citations": [
+        {
+          "documentId": "policy",
+          "quote": "requires a tax ID"
+        }
+      ]
+    },
+    {
+      "id": "support-policy",
+      "relevant": [
+        "returns"
+      ],
+      "retrieved": [
+        "returns"
+      ],
+      "context": [
+        {
+          "id": "returns",
+          "text": "Returns are accepted within 30 days."
+        }
+      ],
+      "citations": [
+        {
+          "documentId": "returns",
+          "quote": "within 30 days"
+        }
+      ]
+    }
+  ]
+}
