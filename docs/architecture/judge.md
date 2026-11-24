@@ -1,0 +1,9 @@
+# Opt-in judge architecture
+
+The judge is a separate asynchronous API, not a new deterministic metric. Trusted caller supplies rubric, adapter and policy. Model returns strict JSON criterion scores only; local code validates scores, calculates a weighted mean and applies the threshold. Invalid responses, transport failures and timeouts throw; they are not passes. Do not catch these errors and continue deployment.
+
+External adapters require enabled=true and allowExternal=true. The provided Chat Completions adapter takes an explicit HTTPS endpoint, model and caller-supplied key. It sends expected and actual text to that endpoint; obtain authorization, check data residency and redact confidential data first. No default endpoint, provider SDK, automatic retries, redirects, tool calls or secret persistence. Custom adapters are trusted executable code, not sandboxed. Abort signals are cooperative and cannot stop an adapter that ignores them. Prompt separation reduces but cannot eliminate injection or judge bias. Provider-specific parameter compatibility must be tested by the integrator; no live provider verification yet.
+
+Calibration accepts independently human-labeled binary decisions and reports confusion counts, agreement, precision, recall and false positive rate. Use representative held-out examples, review disagreement and establish thresholds before relying on a judge. Mock scores are fixtures, not semantic judgments or performance evidence. No automatic calibration or live benchmark is claimed.
+
+Judge reports contain input and rubric digests, adapter/model identity and criterion scores; they omit raw text and credentials, but are not anonymized or signed. Temperature zero does not guarantee reproducibility. Do not mix judge and deterministic reports or compare across model/rubric changes without separate validation.
