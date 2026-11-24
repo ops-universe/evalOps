@@ -13,3 +13,5 @@ Added RAG retrieval ranking metrics, exact citation quote verification, explicit
 Added local RAG CLI, versioned reports and per-case metric regression comparison with blocking exit codes.
 
 Added deterministic offline agent trace evaluation with exact tool sequence and argument comparisons, completion expectations and unauthorized-tool detection.
+
+Added agent-run and agent-validate CLI commands, versioned agent dataset schema, shared bounded JSON loader and CLI integration tests.

@@ -4,7 +4,7 @@
 - Phase 3: extra metrics and regression comparison (implemented).
 - Phase 4: opt-in judging and calibration (merged; live providers unverified).
 - Phase 5: RAG evaluation (merged; PRs #5 and #6, exact-head CI passed).
-- Phase 6: agent trace evaluation (core API and tests on feature branch; CLI/schema integration pending).
+- Phase 6: agent trace evaluation (6a merged; 6b CLI and dataset schema implemented on branch, CI pending).
 - Phase 7: CI/CD gates and baseline management.
 - Phase 8: local dashboard.
 - Phase 9: synthetic enterprise FDE examples.
