@@ -38,3 +38,13 @@ node src/cli.mjs run datasets/synthetic.json --min-pass-rate 0.75 --out evidence
 ```
 
 The CLI exits 0 on pass, 1 on failed gate, 2 on invalid input or I/O error. Existing reports are never overwritten. Versioned schemas live in `schemas/`; see [dataset and evidence contracts](docs/architecture/datasets-and-evidence.md). Reports include a reproducible dataset SHA-256, not a signed attestation. Do not publish sensitive IDs or hashes.
+
+## Regression comparison
+
+Additional deterministic metrics: `normalized-exact` (NFC, whitespace normalization and lowercase) and `json-equal` (parsed JSON structural equality, object key order ignored, array order preserved, depth limit 100). Invalid JSON fails; JavaScript number precision and duplicate JSON keys follow JSON.parse semantics. These are not semantic metrics.
+
+```sh
+node src/cli.mjs compare baseline.json current.json --out regression.json
+```
+
+Generate both evidence files with the updated evaluator. Comparison requires matching suite fingerprints (case IDs, metrics and expected text), validates evidence totals, detects per-case regressions even when aggregate scores are unchanged, and blocks on any regression, score drop or failed current absolute gate. The API supports explicit tolerances; CLI defaults are strict. Evidence is unsigned and must come from trusted runs. Old reports without a suite fingerprint must be regenerated.

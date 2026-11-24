@@ -36,7 +36,9 @@
           "metric": {
             "enum": [
               "exact",
-              "contains"
+              "contains",
+              "normalized-exact",
+              "json-equal"
             ]
           },
           "expected": {

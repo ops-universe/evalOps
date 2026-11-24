@@ -79,7 +79,9 @@
           "metric": {
             "enum": [
               "exact",
-              "contains"
+              "contains",
+              "normalized-exact",
+              "json-equal"
             ]
           },
           "passed": {
@@ -87,6 +89,10 @@
           }
         }
       }
+    },
+    "suiteSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
     }
   }
 }
