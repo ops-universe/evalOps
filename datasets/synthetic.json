@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "supplier-001",
+      "metric": "exact",
+      "expected": "SKU-42",
+      "actual": "SKU-42"
+    },
+    {
+      "id": "supplier-002",
+      "metric": "contains",
+      "expected": "Missing weight",
+      "actual": "Missing weight: request supplier confirmation."
+    },
+    {
+      "id": "supplier-003",
+      "metric": "exact",
+      "expected": "review",
+      "actual": "allow"
+    },
+    {
+      "id": "supplier-004",
+      "metric": "exact",
+      "expected": "deny",
+      "actual": "deny"
+    }
+  ]
+}

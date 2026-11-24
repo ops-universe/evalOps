@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {evaluate} from '../src/engine.mjs';
+const c={id:'a',expected:'SKU',actual:'SKU',metric:'exact'};
+test('exact match passes',()=>assert.equal(evaluate([c],{minPassRate:1}).gate,'pass'));
+test('contains is literal and case sensitive',()=>{assert.equal(evaluate([{...c,metric:'contains',actual:'new SKU'}],{minPassRate:1}).passed,1);assert.equal(evaluate([{...c,actual:'sku'}],{minPassRate:1}).failed,1);});
+test('regression blocks gate',()=>assert.equal(evaluate([{...c,actual:'wrong'}],{minPassRate:1}).gate,'fail'));
+test('mixed results and inclusive threshold',()=>{const r=evaluate([c,{...c,id:'b',actual:'wrong'}],{minPassRate:.5});assert.equal(r.passRate,.5);assert.equal(r.gate,'pass');});
+test('empty dataset rejected',()=>assert.throws(()=>evaluate([],{minPassRate:0})));
+test('duplicate case rejected',()=>assert.throws(()=>evaluate([c,c],{minPassRate:1})));
+test('unknown metric rejected',()=>assert.throws(()=>evaluate([{...c,metric:'unknown'}],{minPassRate:1})));
+test('invalid thresholds rejected',()=>{for(const v of [NaN,Infinity,-1,2,'1',undefined])assert.throws(()=>evaluate([c],{minPassRate:v}));});
+test('empty expected and nonstring outputs rejected',()=>{assert.throws(()=>evaluate([{...c,expected:''}],{minPassRate:1}));assert.throws(()=>evaluate([{...c,actual:{}}],{minPassRate:1}));});
+test('deterministic and raw outputs omitted',()=>{const a=evaluate([c],{minPassRate:1});assert.deepEqual(a,evaluate([c],{minPassRate:1}));assert.equal(Object.hasOwn(a.results[0],'actual'),false);});
