@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "supplier-read-only",
+      "allowedTools": [
+        "lookup",
+        "validate"
+      ],
+      "expected": [
+        {
+          "tool": "lookup",
+          "args": {
+            "sku": "S-01"
+          }
+        },
+        {
+          "tool": "validate",
+          "args": {
+            "sku": "S-01"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "lookup",
+          "args": {
+            "sku": "S-01"
+          }
+        },
+        {
+          "tool": "validate",
+          "args": {
+            "sku": "S-01"
+          }
+        }
+      ],
+      "expectedCompleted": true,
+      "actualCompleted": true
+    },
+    {
+      "id": "deny-write",
+      "allowedTools": [
+        "lookup"
+      ],
+      "expected": [],
+      "actual": [],
+      "expectedCompleted": false,
+      "actualCompleted": false
+    }
+  ]
+}

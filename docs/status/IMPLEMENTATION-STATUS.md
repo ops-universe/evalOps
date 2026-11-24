@@ -1,2 +1,2 @@
 # Implementation status
-Developer Preview. Phases 1–4 merged. Phase 5a PR #5 merged with successful exact-head CI. Phase 5b RAG CLI, versioned evidence and baseline comparison implemented on branch; CI pending. No live provider evidence. Phase 6 next after merge.
+Developer Preview. Phases 1–5 merged. Phase 5b PR #6 exact-head test and website checks passed; main merge verified. Phase 6a core agent evaluation API, fixture and tests implemented on feature branch; CI pending. Phase 6b CLI and schema integration pending. No live provider evidence.
