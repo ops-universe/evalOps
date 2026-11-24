@@ -4,7 +4,7 @@
 
 Developer Preview · MIT · Local-first AI evaluation engineering.
 
-evalOps aims to provide vendor-independent evaluation for LLM applications, RAG and agents. The initial implementation evaluates supplied string outputs with exact-match and literal-contains metrics and an explicit pass-rate gate. It does not call models, judge semantic quality or execute tools.
+evalOps aims to provide vendor-independent evaluation for LLM applications, RAG and agents. The deterministic core evaluates supplied string outputs offline. A separate explicitly opt-in judge API supports structured rubric scoring; no default model calls or tool execution.
 
 ## Quick start
 
@@ -48,3 +48,7 @@ node src/cli.mjs compare baseline.json current.json --out regression.json
 ```
 
 Generate both evidence files with the updated evaluator. Comparison requires matching suite fingerprints (case IDs, metrics and expected text), validates evidence totals, detects per-case regressions even when aggregate scores are unchanged, and blocks on any regression, score drop or failed current absolute gate. The API supports explicit tolerances; CLI defaults are strict. Evidence is unsigned and must come from trusted runs. Old reports without a suite fingerprint must be regenerated.
+
+## Optional model-assisted judging
+
+Run the offline synthetic fixture: `node examples/judge-demo.mjs`. The fixture does not evaluate semantic quality. Use `judgeCase` with a trusted rubric, adapter and explicit policy. A configurable HTTPS Chat Completions adapter is provided, but no live provider compatibility is verified. External calls require both opt-in flags and transmit case text. See [judge architecture and calibration](docs/architecture/judge.md).
