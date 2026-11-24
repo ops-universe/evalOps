@@ -1,3 +1,4 @@
+import {metrics} from './metrics.mjs';
 import {open} from 'node:fs/promises';
 export const limits=Object.freeze({fileBytes:5*1024*1024,cases:10000,text:100000,id:128});
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
@@ -6,7 +7,7 @@ export function validateDataset(d){
  if(!record(d)||!keys(d,['schemaVersion','synthetic','cases'])||d.schemaVersion!==1||typeof d.synthetic!=='boolean'||!Array.isArray(d.cases)||d.cases.length<1||d.cases.length>limits.cases)throw new Error('Invalid version 1 dataset');
  const seen=new Set();
  for(const c of d.cases){
-  if(!record(c)||!keys(c,['id','expected','actual','metric'])||typeof c.id!=='string'||! /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(c.id)||seen.has(c.id)||typeof c.expected!=='string'||!c.expected.length||c.expected.length>limits.text||typeof c.actual!=='string'||c.actual.length>limits.text||!['exact','contains'].includes(c.metric))throw new Error('Invalid or duplicate dataset case');
+  if(!record(c)||!keys(c,['id','expected','actual','metric'])||typeof c.id!=='string'||! /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(c.id)||seen.has(c.id)||typeof c.expected!=='string'||!c.expected.length||c.expected.length>limits.text||typeof c.actual!=='string'||c.actual.length>limits.text||!metrics.includes(c.metric))throw new Error('Invalid or duplicate dataset case');
   seen.add(c.id);
  }
  return d;

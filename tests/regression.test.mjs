@@ -1,0 +1,15 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {score} from '../src/metrics.mjs';import {buildEvidence} from '../src/evidence.mjs';import {compare} from '../src/regression.mjs';
+const d={schemaVersion:1,synthetic:true,cases:[{id:'a',metric:'exact',expected:'yes',actual:'yes'},{id:'b',metric:'exact',expected:'no',actual:'wrong'}]};
+const evidence=(cases=d.cases,threshold=0)=>buildEvidence({...d,cases},threshold);
+test('normalized exact handles casing, spaces and NFC',()=>assert.equal(score('normalized-exact',' CAFÉ ','cafe\u0301'),true));
+test('JSON object order ignored, array order preserved',()=>{assert.equal(score('json-equal','{"a":1,"b":2}','{"b":2,"a":1}'),true);assert.equal(score('json-equal','[1,2]','[2,1]'),false);});
+test('invalid JSON fails without execution',()=>assert.equal(score('json-equal','{}','bad'),false));
+test('same suite with changed output has distinct dataset digest',()=>{const a=evidence(),b=evidence(d.cases.map(c=>({...c,actual:c.expected})));assert.equal(a.suiteSha256,b.suiteSha256);assert.notEqual(a.datasetSha256,b.datasetSha256);assert.deepEqual(compare(a,b).improvements,['b']);});
+test('regression detected despite equal aggregate score',()=>{const a=evidence(),b=evidence([{...d.cases[0],actual:'wrong'},{...d.cases[1],actual:'no'}]);const r=compare(a,b);assert.equal(r.delta,0);assert.deepEqual(r.regressions,['a']);assert.equal(r.gate,'fail');});
+test('suite order may change',()=>assert.equal(compare(evidence(),evidence([...d.cases].reverse())).gate,'pass'));
+test('changed expected output rejects comparison',()=>assert.throws(()=>compare(evidence(),evidence([{...d.cases[0],expected:'new'},d.cases[1]])),/Incompatible/));
+test('malformed evidence totals rejected',()=>assert.throws(()=>compare({...evidence(),passed:99},evidence()),/Inconsistent/));
+test('legacy evidence without suite digest rejected',()=>assert.throws(()=>compare({...evidence(),suiteSha256:undefined},evidence())));
+test('absolute current gate remains mandatory',()=>assert.equal(compare(evidence(),evidence(d.cases,1)).gate,'fail'));
+test('explicit tolerance permitted only within policy',()=>{const b=evidence(d.cases.map(c=>({...c,actual:c.expected}))),c=evidence();assert.equal(compare(b,c,{maxDrop:.5,maxRegressions:1}).gate,'pass');assert.equal(compare(b,c,{maxDrop:.49,maxRegressions:1}).gate,'fail');});

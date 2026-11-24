@@ -1,0 +1,3 @@
+# Regression contracts
+
+Suite fingerprint hashes sorted case IDs, metrics and expected strings, excluding actual output. Dataset fingerprint includes actual output and case order. Compare only trusted evidence from identical suites and evaluator versions. Strict default: no newly failing case, no aggregate drop and current absolute gate passes. API tolerances are explicit. Evidence validation checks internal counts but cannot authenticate reports. Legacy evidence without suite fingerprints cannot be compared. JSON equality uses standard JavaScript parsing and bounded recursive comparison; no semantic or model evaluation.
