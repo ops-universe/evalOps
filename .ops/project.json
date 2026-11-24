@@ -1,0 +1,8 @@
+{
+  "name": "evalOps",
+  "ecosystem": "ops-universe",
+  "maturity": "developer-preview",
+  "schemaVersion": 1,
+  "palette": "evalops",
+  "paletteStatus": "registered"
+}
