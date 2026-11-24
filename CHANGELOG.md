@@ -11,3 +11,5 @@ Added opt-in rubric judging, mock and configurable Chat Completions adapters, ti
 Added RAG retrieval ranking metrics, exact citation quote verification, explicit groundedness scorer interface and synthetic evidence gates.
 
 Added local RAG CLI, versioned reports and per-case metric regression comparison with blocking exit codes.
+
+Added deterministic offline agent trace evaluation with exact tool sequence and argument comparisons, completion expectations and unauthorized-tool detection.

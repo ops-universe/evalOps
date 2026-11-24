@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {evaluateAgent} from '../src/agent.mjs';
+const fixture=JSON.parse(await readFile(new URL('../datasets/agent-synthetic.json',import.meta.url),'utf8'));
+test('synthetic deterministic evidence and no argument leakage',()=>{const r=evaluateAgent(fixture);assert.equal(r.gate,'pass');assert.deepEqual(r,evaluateAgent(fixture));assert.ok(!JSON.stringify(r).includes('S-01'));});
+test('wrong order, incorrect arguments and missing completion fail',()=>{for(const mutate of [c=>c.actual.reverse(),c=>c.actual[0].args.sku='wrong',c=>c.actualCompleted=false,c=>c.actual.pop()]){const d=structuredClone(fixture);mutate(d.cases[0]);assert.equal(evaluateAgent(d).gate,'fail');}});
+test('unauthorized extra tool always fails even on completion',()=>{const d=structuredClone(fixture);d.cases[0].actual.push({tool:'write',args:{}});const r=evaluateAgent(d);assert.equal(r.gate,'fail');assert.deepEqual(r.results[0].unauthorized,[{index:2,tool:'write'}]);});
+test('invalid expected policy, duplicate IDs and malformed arguments rejected',()=>{for(const mutate of [d=>d.cases[0].allowedTools=[],d=>d.cases.push(d.cases[0]),d=>d.cases[0].actual[0].args=JSON.parse('{"__proto__":{}}')]){const d=structuredClone(fixture);mutate(d);assert.throws(()=>evaluateAgent(d));}});
+test('argument object key order is irrelevant',()=>{const d=structuredClone(fixture);d.cases[0].expected[0].args={a:1,b:2};d.cases[0].actual[0].args={b:2,a:1};assert.equal(evaluateAgent(d).gate,'pass');});
