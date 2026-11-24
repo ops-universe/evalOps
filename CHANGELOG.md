@@ -7,3 +7,5 @@ Initial deterministic evaluator, synthetic dataset, governance and branded websi
 Added bounded version 1 dataset validation, CLI quality gates, deterministic evidence hashes and exclusive report output.
 
 Added opt-in rubric judging, mock and configurable Chat Completions adapters, timeout/error controls and human-label calibration metrics.
+
+Added RAG retrieval ranking metrics, exact citation quote verification, explicit groundedness scorer interface and synthetic evidence gates.

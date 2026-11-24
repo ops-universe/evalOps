@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {retrievalMetrics,verifyCitations,assessGroundedness,evaluateRag} from '../src/rag.mjs';
+import {readFile} from 'node:fs/promises';
+test('ranking metrics include cutoff and graded position',()=>{const r=retrievalMetrics(['x','a','b'],['a','b'],2);assert.equal(r.precision,.5);assert.equal(r.recall,.5);assert.equal(r.reciprocalRank,.5);assert.ok(r.ndcg>0&&r.ndcg<1);});
+test('perfect and empty retrieval',()=>{assert.equal(retrievalMetrics(['a'],['a'],1).ndcg,1);assert.equal(retrievalMetrics([],['a'],1).recall,0);});
+test('reject duplicate IDs, empty labels and invalid cutoff',()=>{for(const args of [[['a','a'],['a'],1],[[],[],1],[[],['a'],0]])assert.throws(()=>retrievalMetrics(...args));});
+test('citation checks exact quotes and missing sources',()=>{const r=verifyCitations([{id:'a',text:'approved terms'}],[{documentId:'a',quote:'approved'},{documentId:'b',quote:'approved'},{documentId:'a',quote:'invented'}]);assert.equal(r.citationAccuracy,1/3);});
+test('reject empty quotes and duplicate context',()=>{assert.throws(()=>verifyCitations([],[{documentId:'a',quote:' '} ]));assert.throws(()=>verifyCitations([{id:'a',text:'x'},{id:'a',text:'y'}],[{documentId:'a',quote:'x'}]));});
+test('explicit groundedness scorer and invalid output',async()=>{const input={answer:'test',context:[]};assert.deepEqual(await assessGroundedness(input,async()=>.5),{groundedness:.5});await assert.rejects(assessGroundedness(input,async()=>NaN));await assert.rejects(assessGroundedness(input));});
+test('synthetic evidence deterministic and regressions fail absolute gate',async()=>{const d=JSON.parse(await readFile(new URL('../datasets/rag-synthetic.json',import.meta.url),'utf8'));const a=evaluateRag(d);assert.equal(a.gate,'pass');assert.deepEqual(a,evaluateRag(d));d.cases[0].citations[0].quote='fabricated';const b=evaluateRag(d);assert.equal(b.gate,'fail');assert.equal(a.suiteSha256,b.suiteSha256);assert.notEqual(a.datasetSha256,b.datasetSha256);});
