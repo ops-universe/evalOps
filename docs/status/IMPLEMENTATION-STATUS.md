@@ -1,3 +1,2 @@
 # Implementation status
-Developer Preview. Phases 1–4 merged; Phase 4 main Core CI succeeded (run 45454078122).
-Phase 5 first increment: retrieval, citation and evidence APIs, synthetic fixture and negative-path tests. CI pending at authoring time. CLI integration and baseline regression comparison remain open. No semantic accuracy or live provider results claimed.
+Developer Preview. Phases 1–4 merged. Phase 5a PR #5 merged with successful exact-head CI. Phase 5b RAG CLI, versioned evidence and baseline comparison implemented on branch; CI pending. No live provider evidence. Phase 6 next after merge.

@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile,mkdtemp,writeFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {evaluateRag} from '../src/rag.mjs';
+import {compareRag} from '../src/rag-regression.mjs';
+const fixture=JSON.parse(await readFile(new URL('../datasets/rag-synthetic.json',import.meta.url),'utf8'));
+test('comparison detects ranking regression even if absolute gate passes',()=>{const a=evaluateRag(fixture);const d=structuredClone(fixture);d.cases[0].retrieved.reverse();const b=evaluateRag(d);assert.equal(b.gate,'pass');assert.equal(compareRag(a,b).gate,'fail');assert.equal(compareRag(a,a).gate,'pass');assert.throws(()=>compareRag(a,evaluateRag(d,{k:2})));assert.throws(()=>compareRag(a,{...a,passed:0}));});
+test('CLI report, blocking gate, no overwrite and invalid arguments',async()=>{const dir=await mkdtemp(join(tmpdir(),'evalops-rag-'));try{const out=join(dir,'report.json'),bad=join(dir,'bad.json');const run=(...args)=>spawnSync(process.execPath,['src/cli.mjs',...args],{encoding:'utf8'});assert.equal(run('rag-run','datasets/rag-synthetic.json','--out',out).status,0);assert.equal(run('rag-compare',out,out).status,0);assert.equal(run('rag-run','datasets/rag-synthetic.json','--out',out).status,2);assert.equal(run('rag-run','datasets/rag-synthetic.json','--k','0').status,2);const d=structuredClone(fixture);d.cases[0].citations[0].quote='invented';await writeFile(bad,JSON.stringify(d));const failed=join(dir,'failed.json');assert.equal(run('rag-run',bad,'--out',failed).status,1);assert.equal(run('rag-compare',out,failed).status,1);}finally{await rm(dir,{recursive:true,force:true});}});

@@ -1,7 +1,5 @@
 # Resume checkpoint
-Last verified main SHA: f40ef5fe4a5754ec7fc93ad1e4944331798399bf
-Current phase: 5 (RAG).
-Phase 4 evidence: https://github.com/ops-universe/evalOps/actions/runs/45454078122
-Phase 5 branch: feat/rag-evaluation. PR/CI pending at authoring time.
-Reproduce: npm ci && npm test; cd website-react && npm ci && npm run build.
-Next: verify exact PR head CI, then add RAG CLI and baseline regression comparison before Phase 6. No known live-provider verification.
+Last verified main SHA: c69a128a9a8edf787714fb77af3afa893a90f2a8
+Phase 5a PR #5 merged; Phase 5b branch feat/rag-cli-regression. CI pending at authoring time.
+Verify: npm ci && npm test; node src/cli.mjs rag-run datasets/rag-synthetic.json; cd website-react && npm ci && npm run build.
+Next: verify exact head CI and merge eligible PR; implement agent trace evaluation.
