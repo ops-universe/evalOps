@@ -8,4 +8,4 @@
 - Phase 7: CI/CD gates and baseline management (PR #9 merged; exact-head CI passed).
 - Phase 8: local dashboard (merged; browser acceptance passed in PR #11 and post-merge CI).
 - Phase 9: synthetic enterprise FDE examples (PR #11 merged; benchmark CI passed).
-- Phase 10: functional and security hardening (strict RAG validation, groundedness deadlines and regression policy integrity implemented on acceptance branch; CI pending). Public release and Developer Preview launch deferred.
+- Phase 10: functional and security hardening (PR #12 merged; all exact-head checks passed, 75/75 tests). Post-merge CI not yet verified at authoring time. Public release and Developer Preview launch deferred.

@@ -27,3 +27,5 @@ Hardened Chromium startup with an isolated dynamic debugging port and diagnostic
 Hardened RAG structural validation and groundedness deadlines, rejected changed regression policies, and documented verified browser and enterprise acceptance and residual security limitations.
 
 Corrected the absolute-gate regression fixture to compare identical thresholds while permitting the observed regression through tolerance checks; added bidirectional threshold-mismatch rejection coverage.
+
+Engineering acceptance: PR #12 merged after 75/75 tests, both dependency audits, Chromium interactions, enterprise benchmarks and multi-suite gates passed on the exact head. Post-merge CI not yet verified at authoring time. No release or live provider compatibility claim.
