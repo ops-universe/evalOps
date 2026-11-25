@@ -19,3 +19,7 @@ Added agent-run and agent-validate CLI commands, versioned agent dataset schema,
 Added reusable multi-suite CI gate, explicit exclusive baseline creation, regression policies, JSON and JUnit reports, bounded relative input paths and synthetic CI integration.
 
 Added local browser dashboard for evaluation evidence, metric charts, baseline comparison, failed-case filtering and selected view export.
+
+Added three synthetic enterprise scenarios with reproducible positive and negative evidence, Chromium dashboard interaction checks and nonblocking local file opens.
+
+Hardened Chromium startup with an isolated dynamic debugging port and diagnostic timeouts; extended bounded nonblocking UTF-8 JSON input handling to legacy CLI paths.
