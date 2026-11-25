@@ -15,3 +15,5 @@ Added local RAG CLI, versioned reports and per-case metric regression comparison
 Added deterministic offline agent trace evaluation with exact tool sequence and argument comparisons, completion expectations and unauthorized-tool detection.
 
 Added agent-run and agent-validate CLI commands, versioned agent dataset schema, shared bounded JSON loader and CLI integration tests.
+
+Added reusable multi-suite CI gate, explicit exclusive baseline creation, regression policies, JSON and JUnit reports, bounded relative input paths and synthetic CI integration.

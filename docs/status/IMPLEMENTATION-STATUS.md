@@ -1,2 +1,2 @@
 # Implementation status
-Developer Preview. Phases 1–5 merged. Phase 6a PR #7 merged with successful exact-head CI. Phase 6b agent CLI and structural schema implemented on branch; CI pending. Tool arguments checked by exact expected values, not arbitrary JSON Schema. Phase 7 next after merge.
+Developer Preview. Phases 1–6 merged; PR #8 exact-head tests and website build passed. Phase 7 configuration-driven deterministic/RAG/agent gates, baseline creation and JSON/JUnit implemented on branch; CI pending. Synthetic CI checks mechanics, not independent historical baselines. Phase 8 local dashboard next.

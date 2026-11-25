@@ -14,6 +14,12 @@ jobs:
           node-version: '22'
       - run: npm ci
       - run: npm test
+      - name: Exercise synthetic multi-suite gate
+        run: |
+          node src/cli.mjs baseline-create evalops.config.json --suite deterministic
+          node src/cli.mjs baseline-create evalops.config.json --suite rag
+          node src/cli.mjs baseline-create evalops.config.json --suite agent
+          node src/cli.mjs gate evalops.config.json --out gate.json --junit junit.xml
       - run: node src/cli.mjs validate datasets/synthetic.json
       - run: node src/cli.mjs run datasets/synthetic.json --min-pass-rate 0.75 --out evidence.json
       - name: Verify failed gate is blocking
@@ -27,6 +33,8 @@ jobs:
           path: |
             evidence.json
             failed-evidence.json
+            gate.json
+            junit.xml
           if-no-files-found: error
   website-build:
     runs-on: ubuntu-24.04
