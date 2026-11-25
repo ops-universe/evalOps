@@ -13,7 +13,7 @@ function validate(r){
 export function compare(baseline,current,{maxDrop=0,maxRegressions=0}={}){
  if(typeof maxDrop!=='number'||!Number.isFinite(maxDrop)||maxDrop<0||maxDrop>1||!Number.isInteger(maxRegressions)||maxRegressions<0)throw new Error('Invalid regression policy');
  const b=validate(baseline),c=validate(current);
- if(baseline.suiteSha256!==current.suiteSha256||baseline.synthetic!==current.synthetic||b.size!==c.size)throw new Error('Incompatible evaluation suites');
+ if(baseline.minPassRate!==current.minPassRate||baseline.suiteSha256!==current.suiteSha256||baseline.synthetic!==current.synthetic||b.size!==c.size)throw new Error('Incompatible evaluation suites');
  const regressions=[],improvements=[];
  for(const [id,old] of b){const now=c.get(id);if(!now||old.metric!==now.metric)throw new Error('Incompatible evaluation cases');if(old.passed&&!now.passed)regressions.push(id);if(!old.passed&&now.passed)improvements.push(id);}
  const delta=(current.passed-baseline.passed)/b.size;

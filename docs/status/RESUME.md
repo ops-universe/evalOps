@@ -1,8 +1,8 @@
 # Resume checkpoint
-Last verified main SHA: 43b91380f550a8b451f42d5ad76a87d9a92a165f
-PR #10 merged; main CI https://github.com/ops-universe/evalOps/actions/runs/45518512893
-Branch feat/enterprise-benchmarks-browser: browser interaction tests and Phase 9 benchmarks; CI pending at authoring time.
-Verify: npm ci && npm test; node examples/enterprise/run.mjs; cd website-react && npm ci && npm run build; from root timeout 90s node tests/browser/dashboard.mjs (Node 22, Chrome).
-Next: verify exact head CI, resolve actual failures, merge eligible PR, complete remaining functional/security acceptance. Public release and promotional website deferred. Live providers unverified.
+Last verified main SHA: ce0e497627c037ff4d02851ca94775e0d060addb
+PR #11 merged; post-merge CI https://github.com/ops-universe/evalOps/actions/runs/45522150546 and https://github.com/ops-universe/evalOps/actions/runs/45522146499 passed.
+Phase 10 branch feat/functional-security-acceptance: strict RAG validation, groundedness deadlines, regression policy integrity, security tests and threat model. CI pending at authoring time.
+Verify npm ci && npm test && npm audit --audit-level=high; node examples/enterprise/run.mjs; website npm ci, audit, build and Chromium interaction tests via Core CI.
+Next: verify all exact-head checks and mandatory merge requirements, squash merge eligible PR, confirm post-merge CI and reconcile final checkpoint. Developer Preview launch/public release deferred; live providers unverified.
 
-Original PR #11 head 724ee58d had mixed CI: PR run 45519407785 passed, push 45519398116 failed at Chrome target discovery. New head uses dynamic Chrome port and startup diagnostics; verify all new exact-head checks before merge.
+PR #12 original head cbb60418 failed core test 138900414220 (73/74 passed). Corrected fixture; policy consistency and absolute gate unchanged. Verify new head tests, both audits, enterprise and browser checks before merge.

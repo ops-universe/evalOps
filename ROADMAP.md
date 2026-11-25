@@ -6,6 +6,6 @@
 - Phase 5: RAG evaluation (merged; PRs #5 and #6, exact-head CI passed).
 - Phase 6: agent trace evaluation (PRs #7 and #8 merged; exact-head CI passed).
 - Phase 7: CI/CD gates and baseline management (PR #9 merged; exact-head CI passed).
-- Phase 8: local dashboard (PR #10 merged; exact-head and main CI passed; browser verification passed PR workflow; push startup failed; corrective changes pending CI).
-- Phase 9: synthetic enterprise FDE examples (supplier, knowledge and governed support benchmark on branch; CI pending).
-- Phase 10: functional and security hardening; public release and promotional website deferred by owner.
+- Phase 8: local dashboard (merged; browser acceptance passed in PR #11 and post-merge CI).
+- Phase 9: synthetic enterprise FDE examples (PR #11 merged; benchmark CI passed).
+- Phase 10: functional and security hardening (strict RAG validation, groundedness deadlines and regression policy integrity implemented on acceptance branch; CI pending). Public release and Developer Preview launch deferred.
