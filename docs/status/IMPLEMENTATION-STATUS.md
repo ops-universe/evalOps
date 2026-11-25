@@ -1,2 +1,4 @@
 # Implementation status
 Phases 1–9 merged. PR #11 corrected head 9add654c passed all four checks; main ce0e4976 post-merge workflows 45522150546 and 45522146499 passed, including browser interactions, enterprise benchmarks and audits. Phase 10 strict validation, scorer deadline, regression policy integrity and threat-model updates implemented on acceptance branch; exact-head CI pending. Developer Preview launch and public release deferred. Live provider compatibility unverified.
+
+PR #12 original head cbb60418 failed core CI 45523331578: legacy absolute-gate test compared different policies. Website/browser audit passed; core audit skipped. Fixture corrected to exercise the mandatory absolute gate under equal policies and explicitly allowed regression tolerances; new exact-head checks required.

@@ -11,5 +11,6 @@ test('suite order may change',()=>assert.equal(compare(evidence(),evidence([...d
 test('changed expected output rejects comparison',()=>assert.throws(()=>compare(evidence(),evidence([{...d.cases[0],expected:'new'},d.cases[1]])),/Incompatible/));
 test('malformed evidence totals rejected',()=>assert.throws(()=>compare({...evidence(),passed:99},evidence()),/Inconsistent/));
 test('legacy evidence without suite digest rejected',()=>assert.throws(()=>compare({...evidence(),suiteSha256:undefined},evidence())));
-test('absolute current gate remains mandatory',()=>assert.equal(compare(evidence(),evidence(d.cases,1)).gate,'fail'));
+test('absolute current gate remains mandatory',()=>{const b=evidence(d.cases.map(c=>({...c,actual:c.expected})),1),c=evidence(d.cases,1);assert.equal(b.gate,'pass');assert.equal(c.gate,'fail');const r=compare(b,c,{maxDrop:.5,maxRegressions:1});assert.equal(r.delta,-.5);assert.deepEqual(r.regressions,['b']);assert.equal(r.gate,'fail');});
+test('absolute policy changes reject comparison in both directions',()=>{assert.throws(()=>compare(evidence(),evidence(d.cases,1)),/Incompatible/);assert.throws(()=>compare(evidence(d.cases,1),evidence()),/Incompatible/);});
 test('explicit tolerance permitted only within policy',()=>{const b=evidence(d.cases.map(c=>({...c,actual:c.expected}))),c=evidence();assert.equal(compare(b,c,{maxDrop:.5,maxRegressions:1}).gate,'pass');assert.equal(compare(b,c,{maxDrop:.49,maxRegressions:1}).gate,'fail');});

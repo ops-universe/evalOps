@@ -25,3 +25,5 @@ Added three synthetic enterprise scenarios with reproducible positive and negati
 Hardened Chromium startup with an isolated dynamic debugging port and diagnostic timeouts; extended bounded nonblocking UTF-8 JSON input handling to legacy CLI paths.
 
 Hardened RAG structural validation and groundedness deadlines, rejected changed regression policies, and documented verified browser and enterprise acceptance and residual security limitations.
+
+Corrected the absolute-gate regression fixture to compare identical thresholds while permitting the observed regression through tolerance checks; added bidirectional threshold-mismatch rejection coverage.
