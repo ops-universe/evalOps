@@ -1,6 +1,5 @@
 # Resume checkpoint
-Last verified main SHA: e60e9456d498ff8e652ddcd77b84d0f2b53adcb6
-Phase 6b PR #8 merged; CI https://github.com/ops-universe/evalOps/actions/runs/45494180225
-Phase 7 branch feat/ci-regression-gates; CI pending at authoring time.
-Verify: npm ci && npm test; see docs/ci-gates.md for baseline-create and gate commands; cd website-react && npm ci && npm run build.
-Next: verify exact head CI, merge eligible PR; implement local dashboard report import and comparison views.
+Last verified main SHA: 80900426bf2fb11e597e29440d26173be61dd1de
+Phase 7 PR #9 merged after exact-head CI. Phase 8 branch feat/local-report-dashboard; CI pending at authoring time.
+Verify: npm ci && npm test; cd website-react && npm ci && npm run build; see docs/dashboard.md for browser verification.
+Next: verify and merge eligible dashboard PR; add browser interaction evidence; implement enterprise FDE examples.
