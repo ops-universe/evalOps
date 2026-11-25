@@ -4,8 +4,10 @@ import {compare} from './regression.mjs';
 import {readDataset} from './dataset.mjs';
 import {buildEvidence,writeEvidence} from './evidence.mjs';
 import {ragCommand} from './rag-cli.mjs';
-const usage='Usage: evalops validate DATASET | evalops run DATASET --min-pass-rate NUMBER [--out FILE] | evalops compare BASELINE CURRENT [--out FILE] | evalops rag-run DATASET [--k N] [--min-recall N] [--min-citation-accuracy N] [--out FILE] | evalops rag-compare BASE CURRENT [--max-drop N] [--out FILE]';
+import {agentCommand} from './agent-cli.mjs';
+const usage='Usage: evalops validate DATASET | evalops run DATASET --min-pass-rate NUMBER [--out FILE] | evalops compare BASELINE CURRENT [--out FILE] | evalops rag-run DATASET [--k N] [--min-recall N] [--min-citation-accuracy N] [--out FILE] | evalops rag-compare BASE CURRENT [--max-drop N] [--out FILE] | evalops agent-validate DATASET | evalops agent-run DATASET [--out FILE]';
 async function main(args){
+ if(['agent-validate','agent-run'].includes(args[0]))return agentCommand(args);
  if(['rag-run','rag-compare'].includes(args[0]))return ragCommand(args);
  if(args[0]==='--help'&&args.length===1){console.log(usage);return 0;}
  if(args[0]==='compare'){
