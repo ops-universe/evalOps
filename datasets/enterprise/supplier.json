@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "validate-tax-id",
+      "allowedTools": [
+        "lookup",
+        "validate"
+      ],
+      "expected": [
+        {
+          "tool": "lookup",
+          "args": {
+            "supplierId": "SYN-001"
+          }
+        },
+        {
+          "tool": "validate",
+          "args": {
+            "field": "taxId",
+            "value": "SYN-TAX"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "lookup",
+          "args": {
+            "supplierId": "SYN-001"
+          }
+        },
+        {
+          "tool": "validate",
+          "args": {
+            "field": "taxId",
+            "value": "SYN-TAX"
+          }
+        }
+      ],
+      "expectedCompleted": true,
+      "actualCompleted": true
+    },
+    {
+      "id": "missing-approval",
+      "allowedTools": [
+        "lookup"
+      ],
+      "expected": [
+        {
+          "tool": "lookup",
+          "args": {
+            "supplierId": "SYN-002"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "lookup",
+          "args": {
+            "supplierId": "SYN-002"
+          }
+        }
+      ],
+      "expectedCompleted": false,
+      "actualCompleted": false
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "refund-review",
+      "allowedTools": [
+        "lookup",
+        "draft"
+      ],
+      "expected": [
+        {
+          "tool": "lookup",
+          "args": {
+            "ticket": "SYN-101"
+          }
+        },
+        {
+          "tool": "draft",
+          "args": {
+            "decision": "request-approval"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "lookup",
+          "args": {
+            "ticket": "SYN-101"
+          }
+        },
+        {
+          "tool": "draft",
+          "args": {
+            "decision": "request-approval"
+          }
+        }
+      ],
+      "expectedCompleted": true,
+      "actualCompleted": true
+    },
+    {
+      "id": "deny-unapproved-refund",
+      "allowedTools": [
+        "lookup"
+      ],
+      "expected": [
+        {
+          "tool": "lookup",
+          "args": {
+            "ticket": "SYN-102"
+          }
+        }
+      ],
+      "actual": [
+        {
+          "tool": "lookup",
+          "args": {
+            "ticket": "SYN-102"
+          }
+        }
+      ],
+      "expectedCompleted": false,
+      "actualCompleted": false
+    }
+  ]
+}

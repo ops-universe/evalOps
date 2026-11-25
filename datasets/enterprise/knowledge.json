@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "retention-policy",
+      "relevant": [
+        "retention"
+      ],
+      "retrieved": [
+        "retention",
+        "irrelevant"
+      ],
+      "context": [
+        {
+          "id": "retention",
+          "text": "Synthetic policy: retain onboarding records for 90 days."
+        }
+      ],
+      "citations": [
+        {
+          "documentId": "retention",
+          "quote": "90 days"
+        }
+      ]
+    },
+    {
+      "id": "incident-escalation",
+      "relevant": [
+        "incident"
+      ],
+      "retrieved": [
+        "incident",
+        "irrelevant"
+      ],
+      "context": [
+        {
+          "id": "incident",
+          "text": "Synthetic policy: escalate incidents to the duty manager."
+        }
+      ],
+      "citations": [
+        {
+          "documentId": "incident",
+          "quote": "duty manager"
+        }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,8 @@ jobs:
           node-version: '22'
       - run: npm ci
       - run: npm test
+      - run: npm audit --audit-level=high
+      - run: node examples/enterprise/run.mjs --out enterprise.json
       - name: Exercise synthetic multi-suite gate
         run: |
           node src/cli.mjs baseline-create evalops.config.json --suite deterministic
@@ -35,6 +37,7 @@ jobs:
             failed-evidence.json
             gate.json
             junit.xml
+            enterprise.json
           if-no-files-found: error
   website-build:
     runs-on: ubuntu-24.04
@@ -53,6 +56,9 @@ jobs:
           npm ci
       - run: npm audit --audit-level=high
       - run: npm run build
+      - name: Verify dashboard browser interactions
+        working-directory: .
+        run: timeout 90s node tests/browser/dashboard.mjs
       - name: Verify root and project base builds
         run: |
           test -f dist/index.html
