@@ -6,16 +6,18 @@ import {join,resolve} from 'node:path';
 import {evaluateAgent} from '../../src/agent.mjs';
 const dir=await mkdtemp(join(tmpdir(),'evalops-browser-'));
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-let browser,server,ws;
-async function until(fn){for(let i=0;i<100;i++){try{const v=await fn();if(v)return v;}catch{}await sleep(100);}throw new Error('Browser assertion timed out');}
+let browser,server,ws,launchError;let browserLog='';
+async function until(fn,label='interaction',ms=10000){const end=Date.now()+ms;let last;while(Date.now()<end){if(launchError)throw launchError;if(browser&&(browser.exitCode!==null||browser.signalCode!==null))throw new Error('Chrome exited: '+browserLog);try{const v=await fn();if(v)return v;}catch(e){last=e;}await sleep(100);}throw new Error('Browser timeout: '+label+'; '+(last?.message??'condition not satisfied')+'; '+browserLog);}
 try{
  const d=JSON.parse(await readFile('datasets/agent-synthetic.json','utf8'));
  const baseline=join(dir,'baseline.json'),current=join(dir,'current.json'),invalid=join(dir,'invalid.json');
  await writeFile(baseline,JSON.stringify(evaluateAgent(d)));d.cases[0].actual.push({tool:'write',args:{}});await writeFile(current,JSON.stringify(evaluateAgent(d)));await writeFile(invalid,'not json');
  server=spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4173','--strictPort'],{cwd:resolve('website-react'),stdio:'inherit'});
  await until(async()=>(await fetch('http://127.0.0.1:4173')).ok);
- browser=spawn(process.env.CHROME_BIN||'google-chrome',['--headless=new','--no-sandbox','--disable-dev-shm-usage','--disable-background-networking','--remote-debugging-port=9222','--user-data-dir='+join(dir,'profile'),'about:blank'],{stdio:'ignore'});
- const target=await until(async()=>(await (await fetch('http://127.0.0.1:9222/json/list')).json()).find(x=>x.type==='page'));
+ browser=spawn(process.env.CHROME_BIN||'google-chrome',['--headless=new','--no-sandbox','--disable-dev-shm-usage','--disable-background-networking','--remote-debugging-port=0','--remote-debugging-address=127.0.0.1','--user-data-dir='+join(dir,'profile'),'about:blank'],{stdio:['ignore','ignore','pipe']});
+ browser.on('error',e=>{launchError=e;});browser.stderr.on('data',chunk=>{browserLog=(browserLog+chunk.toString()).slice(-4000);});
+ const port=await until(async()=>{const s=await readFile(join(dir,'profile','DevToolsActivePort'),'utf8');const p=Number(s.split('\n')[0]);return Number.isInteger(p)&&p>0&&p<=65535?p:null;},'Chrome debugging port',30000);
+ const target=await until(async()=>(await (await fetch('http://127.0.0.1:'+port+'/json/list',{signal:AbortSignal.timeout(2000)})).json()).find(x=>x.type==='page'),'Chrome debugging target',15000);
  ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((ok,bad)=>{ws.addEventListener('open',ok,{once:true});ws.addEventListener('error',bad,{once:true});});
  let seq=0;const pending=new Map();ws.addEventListener('message',e=>{const m=JSON.parse(e.data);const p=pending.get(m.id);if(p){pending.delete(m.id);m.error?p.reject(Error(m.error.message)):p.resolve(m.result);}});
  const send=(method,params={})=>new Promise((resolve,reject)=>{const id=++seq;pending.set(id,{resolve,reject});ws.send(JSON.stringify({id,method,params}));});

@@ -1,5 +1,6 @@
 import {metrics} from './metrics.mjs';
 import {open} from 'node:fs/promises';
+import {constants} from 'node:fs';
 export const limits=Object.freeze({fileBytes:5*1024*1024,cases:10000,text:100000,id:128});
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const keys=(v,allowed)=>Object.keys(v).every(k=>allowed.includes(k));
@@ -13,7 +14,7 @@ export function validateDataset(d){
  return d;
 }
 export async function readDataset(path){
- const handle=await open(path,'r');
+ const handle=await open(path,constants.O_RDONLY|constants.O_NONBLOCK);
  try{
   const stat=await handle.stat();if(!stat.isFile()||stat.size>limits.fileBytes)throw new Error('Dataset must be a regular file of at most 5 MiB');
   const buffer=Buffer.alloc(limits.fileBytes+1);let size=0;
