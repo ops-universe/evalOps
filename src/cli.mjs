@@ -5,8 +5,11 @@ import {readDataset} from './dataset.mjs';
 import {buildEvidence,writeEvidence} from './evidence.mjs';
 import {ragCommand} from './rag-cli.mjs';
 import {agentCommand} from './agent-cli.mjs';
-const usage='Usage: evalops validate DATASET | evalops run DATASET --min-pass-rate NUMBER [--out FILE] | evalops compare BASELINE CURRENT [--out FILE] | evalops rag-run DATASET [--k N] [--min-recall N] [--min-citation-accuracy N] [--out FILE] | evalops rag-compare BASE CURRENT [--max-drop N] [--out FILE] | evalops agent-validate DATASET | evalops agent-run DATASET [--out FILE]';
+import {gateCommand,baselineCommand} from './gate-cli.mjs';
+const usage='Usage: evalops validate DATASET | evalops run DATASET --min-pass-rate NUMBER [--out FILE] | evalops compare BASELINE CURRENT [--out FILE] | evalops rag-run DATASET [--k N] [--min-recall N] [--min-citation-accuracy N] [--out FILE] | evalops rag-compare BASE CURRENT [--max-drop N] [--out FILE] | evalops agent-validate DATASET | evalops agent-run DATASET [--out FILE] | evalops gate CONFIG [--out FILE] [--junit FILE] | evalops baseline-create CONFIG --suite ID';
 async function main(args){
+ if(args[0]==='gate')return gateCommand(args);
+ if(args[0]==='baseline-create')return baselineCommand(args);
  if(['agent-validate','agent-run'].includes(args[0]))return agentCommand(args);
  if(['rag-run','rag-compare'].includes(args[0]))return ragCommand(args);
  if(args[0]==='--help'&&args.length===1){console.log(usage);return 0;}

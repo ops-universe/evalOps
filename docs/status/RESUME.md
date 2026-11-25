@@ -1,6 +1,6 @@
 # Resume checkpoint
-Last verified main SHA: 392c6c0199a31450b96267de778df0f8222bd841
-Phase 6a PR #7 merged; exact-head CI https://github.com/ops-universe/evalOps/actions/runs/45461435398
-Phase 6b branch feat/agent-cli-schema; CI pending at authoring time.
-Verify: npm ci && npm test; node src/cli.mjs agent-run datasets/agent-synthetic.json; cd website-react && npm ci && npm run build.
-Next: verify and merge eligible PR, then implement reusable CI gate and baseline management.
+Last verified main SHA: e60e9456d498ff8e652ddcd77b84d0f2b53adcb6
+Phase 6b PR #8 merged; CI https://github.com/ops-universe/evalOps/actions/runs/45494180225
+Phase 7 branch feat/ci-regression-gates; CI pending at authoring time.
+Verify: npm ci && npm test; see docs/ci-gates.md for baseline-create and gate commands; cd website-react && npm ci && npm run build.
+Next: verify exact head CI, merge eligible PR; implement local dashboard report import and comparison views.

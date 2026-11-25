@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "suites": [
+    {
+      "id": "deterministic",
+      "kind": "deterministic",
+      "dataset": "datasets/synthetic.json",
+      "baseline": "baselines/deterministic.json",
+      "policy": {
+        "minPassRate": 0.75,
+        "maxDrop": 0,
+        "maxRegressions": 0
+      }
+    },
+    {
+      "id": "rag",
+      "kind": "rag",
+      "dataset": "datasets/rag-synthetic.json",
+      "baseline": "baselines/rag.json",
+      "policy": {
+        "k": 5,
+        "minRecall": 1,
+        "minCitationAccuracy": 1,
+        "maxDrop": 0
+      }
+    },
+    {
+      "id": "agent",
+      "kind": "agent",
+      "dataset": "datasets/agent-synthetic.json",
+      "baseline": "baselines/agent.json",
+      "policy": {}
+    }
+  ]
+}
