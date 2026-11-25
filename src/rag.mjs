@@ -2,6 +2,7 @@ import {createHash} from 'node:crypto';
 const id=x=>typeof x==='string'&&/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(x);
 const ids=x=>Array.isArray(x)&&x.length<=1000&&x.every(id)&&new Set(x).size===x.length;
 const rate=x=>typeof x==='number'&&Number.isFinite(x)&&x>=0&&x<=1;
+const exact=(x,keys)=>x&&typeof x==='object'&&!Array.isArray(x)&&Object.keys(x).length===keys.length&&keys.every(k=>Object.hasOwn(x,k));
 const hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
 export function retrievalMetrics(retrieved,relevant,k){
  if(!ids(retrieved)||!ids(relevant)||!relevant.length||!Number.isInteger(k)||k<1||k>1000)throw new Error('Invalid retrieval input');
@@ -15,25 +16,24 @@ export function retrievalMetrics(retrieved,relevant,k){
 export function verifyCitations(context,citations){
  if(!Array.isArray(context)||context.length>1000||!Array.isArray(citations)||!citations.length||citations.length>1000)throw new Error('Invalid citation input');
  const docs=new Map();
- for(const d of context){if(!d||!id(d.id)||docs.has(d.id)||typeof d.text!=='string'||d.text.length>20000)throw new Error('Invalid context');docs.set(d.id,d.text);}
+ for(const d of context){if(!exact(d,['id','text'])||!id(d.id)||docs.has(d.id)||typeof d.text!=='string'||d.text.length>20000)throw new Error('Invalid context');docs.set(d.id,d.text);}
  const results=citations.map(c=>{
-  if(!c||!id(c.documentId)||typeof c.quote!=='string'||!c.quote.trim()||c.quote.length>20000)throw new Error('Invalid citation');
+  if(!exact(c,['documentId','quote'])||!id(c.documentId)||typeof c.quote!=='string'||!c.quote.trim()||c.quote.length>20000)throw new Error('Invalid citation');
   return {documentId:c.documentId,verified:docs.has(c.documentId)&&docs.get(c.documentId).includes(c.quote)};
  });
  return {citationAccuracy:results.filter(x=>x.verified).length/results.length,results};
 }
 // Caller supplies a trusted, explicitly authorized semantic scorer. No implicit provider calls.
-export async function assessGroundedness({answer,context},scorer){
- if(typeof answer!=='string'||!answer.trim()||answer.length>20000||!Array.isArray(context)||context.length>1000||!context.every(d=>d&&id(d.id)&&typeof d.text==='string'&&d.text.length<=20000)||typeof scorer!=='function')throw new Error('Invalid groundedness input');
- const result=await scorer({answer,context});
- if(!rate(result))throw new Error('Invalid groundedness score');
- return {groundedness:result};
+export async function assessGroundedness({answer,context},scorer,{timeoutMs=10000}={}){
+ if(typeof answer!=='string'||!answer.trim()||answer.length>20000||!Array.isArray(context)||context.length>1000||!context.every(d=>exact(d,['id','text'])&&id(d.id)&&typeof d.text==='string'&&d.text.length<=20000)||new Set(context.map(d=>d.id)).size!==context.length||typeof scorer!=='function'||!Number.isInteger(timeoutMs)||timeoutMs<1||timeoutMs>120000)throw new Error('Invalid groundedness input');
+ const controller=new AbortController();let timer;
+ try{const result=await Promise.race([Promise.resolve().then(()=>scorer({answer,context},{signal:controller.signal})),new Promise((_,reject)=>{timer=setTimeout(()=>{reject(new Error('Groundedness timeout'));controller.abort();},timeoutMs);})]);if(!rate(result))throw new Error('Invalid groundedness score');return {groundedness:result};}finally{clearTimeout(timer);}
 }
 export function evaluateRag(dataset,{k=5,minRecall=1,minCitationAccuracy=1}={}){
- if(!dataset||dataset.schemaVersion!==1||typeof dataset.synthetic!=='boolean'||!Array.isArray(dataset.cases)||!dataset.cases.length||dataset.cases.length>1000||!rate(minRecall)||!rate(minCitationAccuracy))throw new Error('Invalid RAG suite or policy');
+ if(!exact(dataset,['schemaVersion','synthetic','cases'])||dataset.schemaVersion!==1||typeof dataset.synthetic!=='boolean'||!Array.isArray(dataset.cases)||!dataset.cases.length||dataset.cases.length>1000||!rate(minRecall)||!rate(minCitationAccuracy))throw new Error('Invalid RAG suite or policy');
  const seen=new Set(),suite=[];
  const results=dataset.cases.map(c=>{
-  if(!c||!id(c.id)||seen.has(c.id))throw new Error('Invalid case ID');
+  if(!exact(c,['id','retrieved','relevant','context','citations'])||!id(c.id)||seen.has(c.id))throw new Error('Invalid case ID');
   seen.add(c.id);
   const m=retrievalMetrics(c.retrieved,c.relevant,k);
   const citations=verifyCitations(c.context,c.citations);

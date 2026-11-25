@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {evaluateRag,assessGroundedness} from '../src/rag.mjs';
+import {buildEvidence} from '../src/evidence.mjs';
+import {compare} from '../src/regression.mjs';
+const load=async p=>JSON.parse(await readFile(p,'utf8'));
+test('RAG rejects unexpected fields at dataset, case, context and citation boundaries',async()=>{for(const mutate of [d=>d.extra=true,d=>d.cases[0].extra=true,d=>d.cases[0].context[0].extra=true,d=>d.cases[0].citations[0].extra=true]){const d=await load('datasets/rag-synthetic.json');mutate(d);assert.throws(()=>evaluateRag(d));}});
+test('groundedness deadline aborts cooperative scorer and rejects duplicate sources',async()=>{let signal;await assert.rejects(assessGroundedness({answer:'test',context:[]},(_,options)=>{signal=options.signal;return new Promise(()=>{});},{timeoutMs:10}),/timeout/);assert.equal(signal.aborted,true);await assert.rejects(assessGroundedness({answer:'test',context:[{id:'a',text:'x'},{id:'a',text:'y'}]},async()=>1));});
+test('regression rejects changed absolute policy',async()=>{const d=await load('datasets/synthetic.json');assert.throws(()=>compare(buildEvidence(d,.75),buildEvidence(d,1)),/Incompatible/);});

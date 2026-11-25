@@ -23,3 +23,5 @@ Added local browser dashboard for evaluation evidence, metric charts, baseline c
 Added three synthetic enterprise scenarios with reproducible positive and negative evidence, Chromium dashboard interaction checks and nonblocking local file opens.
 
 Hardened Chromium startup with an isolated dynamic debugging port and diagnostic timeouts; extended bounded nonblocking UTF-8 JSON input handling to legacy CLI paths.
+
+Hardened RAG structural validation and groundedness deadlines, rejected changed regression policies, and documented verified browser and enterprise acceptance and residual security limitations.
