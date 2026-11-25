@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {readReport,compareViews} from '../website-react/src/report-model.mjs';
+import {evaluateAgent} from '../src/agent.mjs';
+import {evaluateRag} from '../src/rag.mjs';
+import {buildEvidence} from '../src/evidence.mjs';
+const load=async p=>JSON.parse(await readFile(p,'utf8'));
+test('imports all evaluator evidence types and detects failed cases',async()=>{const d=await load('datasets/agent-synthetic.json'),a=evaluateAgent(d);const b=readReport(JSON.stringify(a)).suites[0];d.cases[0].actual.push({tool:'write',args:{}});const c=readReport(JSON.stringify(evaluateAgent(d))).suites[0];assert.equal(c.gate,'fail');assert.equal(compareViews(c,b)[0].regressed,true);for(const r of [evaluateRag(await load('datasets/rag-synthetic.json')),buildEvidence(await load('datasets/synthetic.json'),.75)])assert.equal(readReport(JSON.stringify(r)).suites[0].gate,'pass');});
+test('rejects malformed, oversized and incompatible reports',async()=>{const a=evaluateAgent(await load('datasets/agent-synthetic.json'));assert.throws(()=>readReport(JSON.stringify({...a,passed:0})));assert.throws(()=>readReport('x'.repeat(5*1024*1024+1)));const v=readReport(JSON.stringify(a)).suites[0];assert.throws(()=>compareViews(v,{...v,suiteSha256:'bad'}));});

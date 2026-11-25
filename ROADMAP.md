@@ -5,7 +5,7 @@
 - Phase 4: opt-in judging and calibration (merged; live providers unverified).
 - Phase 5: RAG evaluation (merged; PRs #5 and #6, exact-head CI passed).
 - Phase 6: agent trace evaluation (PRs #7 and #8 merged; exact-head CI passed).
-- Phase 7: CI/CD gates and baseline management (configuration, explicit baseline creation, JSON/JUnit and CI example implemented on branch; CI pending).
-- Phase 8: local dashboard.
+- Phase 7: CI/CD gates and baseline management (PR #9 merged; exact-head CI passed).
+- Phase 8: local dashboard (report import, metrics, baseline comparison, filters and export implemented on branch; CI/browser verification pending).
 - Phase 9: synthetic enterprise FDE examples.
 - Phase 10: release hardening, website and deployment readiness.
